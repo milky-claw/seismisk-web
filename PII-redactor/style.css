@@ -155,7 +155,7 @@ mark.r{background:transparent!important}
 .registry .tw{display:grid}.registry table{border-collapse:collapse;font-size:12px;table-layout:fixed}.registry col.c1{width:36%}.registry col.c2{width:28%}.registry col.c3{width:26%}.registry col.c4{width:10%}
 .registry th{text-align:left;font-weight:600;color:var(--ink-2);padding:6px 8px;border-bottom:1px solid var(--line);font-size:11.5px}
 .registry td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle;overflow-wrap:anywhere}
-.registry td:first-child{font-family:var(--mono);font-size:11.5px}
+.registry td:first-child{font-family:var(--mono);font-size:11px;white-space:nowrap}
 .registry td:last-child,.registry th:last-child{text-align:right;font-variant-numeric:tabular-nums}
 .registry .tw{overflow:auto;max-height:280px}
 .tier{display:inline-block;padding:2px 5px;border-radius:var(--r);font-size:10.5px;font-weight:600;white-space:nowrap}

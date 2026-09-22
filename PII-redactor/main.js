@@ -5,7 +5,7 @@
    Nothing typed here is logged, stored or sent anywhere but /redact and /rehydrate. */
 const API = new URLSearchParams(location.search).get('api') || document.documentElement.dataset.api || 'https://pii-api.seismisk.com';
 
-const SAMPLE = "Hello,\n\nThe card ending 4471 was charged $84.60 on the 3rd for my son's tuition, but your portal still shows the plan as overdue and has locked his classes. I spoke to your support team last week, and was told the two systems would sync overnight. They haven't. Could you clear the flag and confirm the charge went through? For your records: the account holder is Priya Castellanos, 17 Wexford Road, Apt 3, and the student's date of birth is 14 March 2016. You can call me on 555-014-0176 before 6pm, or reply to priya.castellanos@example.net rather than the portal inbox, which I don't check.\n\nThanks,\nPriya Castellanos";
+const SAMPLE = "Hello,\n\nThe card ending 4471 was charged $84.60 last Tuesday for my son's tuition, but your portal still shows the plan as overdue and has locked his classes. I phoned last week and was told the two systems would sync overnight. They haven't. Could you clear the flag and confirm the charge went through? For your records: the account holder is Priya Castellanos, 17 Wexford Road, Apt 3, and the student's date of birth is 14 March 2016. You can call me on 555-014-0176 any weekday afternoon, or reply to priya.castellanos@example.net rather than the portal inbox, which I don't check.\n\nThanks,\nPriya Castellanos";
 
 /* The same text as the server's own segments — drawn only when the API call fails. */
 const FALLBACK = [
@@ -13,17 +13,13 @@ const FALLBACK = [
   {"token": "[REDACTED_1]", "kind": "FINANCIAL_ID", "tier": "delete", "surface": "4471"},
   {"text": " was charged "},
   {"token": "[AMOUNT_1:medium]", "kind": "AMOUNT", "tier": "generalise", "surface": "$84.60"},
-  {"text": " on the "},
-  {"token": "[AMOUNT_2:low]", "kind": "AMOUNT", "tier": "generalise", "surface": "3rd"},
-  {"text": " for my "},
-  {"token": "[REDACTED_2]", "kind": "GENDER", "tier": "delete", "surface": "son"},
+  {"text": " last Tuesday for my "},
+  {"token": "child", "kind": "NOUN", "tier": "generalise", "surface": "son"},
   {"text": "'s tuition, but your portal still shows the plan as "},
   {"token": "[PAYMENT_STATUS_1]", "kind": "PAYMENT_STATUS", "tier": "generalise", "surface": "overdue"},
   {"text": " and has locked "},
-  {"token": "[REDACTED_3]", "kind": "GENDER", "tier": "delete", "surface": "his"},
-  {"text": " classes. I spoke to your "},
-  {"token": "[REDACTED_4]", "kind": "OCCUPATION", "tier": "delete", "surface": "support team"},
-  {"text": " last week, and was told the two systems would sync overnight. They haven't. Could you clear the flag and confirm the charge went through? For your records: the account holder is "},
+  {"token": "[their]", "kind": "PRONOUN", "tier": "generalise", "surface": "his"},
+  {"text": " classes. I phoned last week and was told the two systems would sync overnight. They haven't. Could you clear the flag and confirm the charge went through? For your records: the account holder is "},
   {"token": "[PERSON_1]", "kind": "PERSON", "tier": "identity", "surface": "Priya Castellanos"},
   {"text": ", "},
   {"token": "[ADDRESS_1]", "kind": "ADDRESS", "tier": "identity", "surface": "17 Wexford Road, Apt 3"},
@@ -31,9 +27,7 @@ const FALLBACK = [
   {"token": "[DOB_1]", "kind": "DOB", "tier": "identity", "surface": "14 March 2016"},
   {"text": ". You can call me on "},
   {"token": "[PHONE_1]", "kind": "PHONE", "tier": "identity", "surface": "555-014-0176"},
-  {"text": " before "},
-  {"token": "[PHONE_2]", "kind": "PHONE", "tier": "identity", "surface": "6pm"},
-  {"text": ", or reply to "},
+  {"text": " any weekday afternoon, or reply to "},
   {"token": "[EMAIL_1]", "kind": "EMAIL", "tier": "identity", "surface": "priya.castellanos@example.net"},
   {"text": " rather than the portal inbox, which I don't check.\n\nThanks,\n"},
   {"token": "[PERSON_1]", "kind": "PERSON", "tier": "identity", "surface": "Priya Castellanos"}
@@ -41,6 +35,11 @@ const FALLBACK = [
 
 const SHORT = {identity: 'id', delete: 'del', generalise: 'gen'};
 const LABEL = {identity: 'Identity', delete: 'Delete', generalise: 'Generalise'};
+const KIND_NAMES = {PERSON:'Name', STAFF:'Staff name', EMAIL:'Email', PHONE:'Phone',
+  ADDRESS:'Address', DOB:'Date of birth', STUDENT_ID:'ID number', FINANCIAL_ID:'Card / account',
+  HEALTH:'Health note', GENDER:'Gender', OCCUPATION:'Occupation', GRADE:'Class code',
+  PAYMENT_STATUS:'Payment status', AMOUNT:'Amount', PAYMENT_PLAN:'Payment plan',
+  ACTIVITY:'Activity', WHEREABOUTS:'Whereabouts', PRONOUN:'Pronoun', NOUN:'Family word'};
 
 const $ = id => document.getElementById(id);
 const input = $('input'), out = $('out'), reg = $('reg'), count = $('count'), timing = $('timing'),
@@ -111,7 +110,7 @@ function registryAdd(s) {
     row.className = 'new';
     row.innerHTML = '<td></td><td></td><td><span class="tier t-' + SHORT[s.tier] + '">' + LABEL[s.tier] + '</span></td><td>1</td>';
     row.children[0].textContent = s.token;
-    row.children[1].textContent = s.kind;
+    row.children[1].textContent = KIND_NAMES[s.kind] || s.kind;
     reg.appendChild(row);
     rows[s.token] = row;
     count.textContent = String(Number(count.textContent) + 1);
@@ -281,8 +280,8 @@ if (window.IntersectionObserver) {
     if (!es.some(e => e.isIntersecting)) return;
     io.disconnect();
     setTimeout(redact, RM ? 0 : 1200);
-  }, {threshold: 0.4});
-  io.observe($('demo'));
+  }, {threshold: 0.6});
+  io.observe(document.querySelector('.pane-out'));
 } else {
   setTimeout(redact, 1200);
 }
