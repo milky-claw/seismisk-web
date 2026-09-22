@@ -44,7 +44,7 @@ const LABEL = {identity: 'Identity', delete: 'Delete', generalise: 'Generalise'}
 
 const $ = id => document.getElementById(id);
 const input = $('input'), out = $('out'), reg = $('reg'), count = $('count'), timing = $('timing'),
-      proto = $('proto'), wc = $('wc'), redactBtn = $('redact'), rehydBtn = $('rehyd');
+      proto = $('proto'), wc = $('wc'), genBtn = $('gen'), redactBtn = $('redact'), rehydBtn = $('rehyd');
 const tabs = [...document.querySelectorAll('.seg [data-view]')];
 const tw = document.querySelector('.registry .tw');
 const RM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -156,8 +156,8 @@ function play(resp) {
   }
   out.classList.add('typing');
   const N = segs.reduce((n, s) => n + (s.token === undefined ? s.text.length : s.surface.length), 0);
-  const d = Math.max(1, Math.min(6, 4000 / N));
-  let si = 0, ci = 0, node = null, mark = null, prev = 0;
+  const d = Math.max(5, Math.min(30, 20000 / N));
+  let si = 0, ci = 0, node = null, mark = null, prev = 0, acc = 0;
   const blocksOf = s => Math.max(3, Math.min(12, s.surface.length));
   const atFlip = () => segs[si].token !== undefined && ci >= blocksOf(segs[si]);
   function one() {
@@ -182,8 +182,10 @@ function play(resp) {
     }
   }
   requestAnimationFrame(function frame(now) {
-    let budget = prev ? Math.max(1, Math.round((now - prev) / d)) : 1;
+    acc += prev ? Math.min(now - prev, 100) : d;   // d outlasts a frame now: bank the time, don't round it away
     prev = now;
+    let budget = Math.floor(acc / d);
+    acc -= budget * d;
     for (let drew = false; budget-- > 0 && si < segs.length; drew = true) {
       if (drew && atFlip()) break;              // the blocks get this frame; the flip gets the next
       one();
@@ -234,7 +236,37 @@ async function rehydrate() {
   setTab('raw');
 }
 
-$('gen').addEventListener('click', () => {input.value = SAMPLE; words(); arm(); input.focus()});
+/* Ruling 15: the sample is written, not pasted — the visitor sees where the text comes from. */
+let generating = false;
+
+function generate() {
+  if (generating) return;
+  generating = true;
+  genBtn.disabled = true;
+  genBtn.textContent = 'Generating…';
+  arm();
+  input.readOnly = true;
+  input.value = '';
+  words();
+  const typed = () => {
+    input.readOnly = false;
+    genBtn.textContent = 'Generate sample';
+    genBtn.disabled = false;
+    generating = false;
+    setTimeout(redact, RM ? 0 : 700);
+  };
+  if (RM) {input.value = SAMPLE; words(); typed(); return}
+  setTimeout(() => {
+    let i = 0;
+    const t = setInterval(() => {
+      input.value = SAMPLE.slice(0, ++i);
+      words();
+      if (i >= SAMPLE.length) {clearInterval(t); typed()}
+    }, 8);
+  }, 600);
+}
+
+genBtn.addEventListener('click', generate);
 $('redact').addEventListener('click', redact);
 rehydBtn.addEventListener('click', rehydrate);
 tabs.forEach(b => b.addEventListener('click', () => {if (state.done) setTab(b.dataset.view)}));
@@ -248,11 +280,11 @@ if (window.IntersectionObserver) {
   const io = new IntersectionObserver(es => {
     if (!es.some(e => e.isIntersecting)) return;
     io.disconnect();
-    setTimeout(redact, RM ? 0 : 700);
+    setTimeout(redact, RM ? 0 : 1200);
   }, {threshold: 0.4});
   io.observe($('demo'));
 } else {
-  setTimeout(redact, 700);
+  setTimeout(redact, 1200);
 }
 
 /* modal */
