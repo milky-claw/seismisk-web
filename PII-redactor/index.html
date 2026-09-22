@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" data-api="https://pii-api.seismisk.com" data-turnstile="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PII redactor — seismisk</title>
+<meta name="description" content="Runs locally, masks personal data, lets ChatGPT, Claude, Gemini or Grok process the rest — built for GDPR, FERPA and CCPA.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body class="pC">
+<header class="nav"><div class="wrap nav-in">
+<a class="brand" href="https://seismisk.com" aria-label="seismisk home">seismisk<span>PII redactor</span></a>
+<nav class="nav-links" aria-label="Sections"><a href="#demo">See it work</a><a href="#why">Why it matters</a><a href="#numbers">Results</a><a href="#uses">Where it fits</a><a href="#how">Under the hood</a></nav>
+<button class="btn btn-sm" type="button" data-cta>Talk to us</button>
+</div></header>
+<main>
+<section class="hero-c"><div class="wrap">
+<div class="hero-copy"><h1>Use ChatGPT on customer emails. Legally.</h1><p class="sub">Runs locally, masks personal data, lets ChatGPT, Claude, Gemini or Grok process the rest — built for GDPR, FERPA and CCPA.</p>
+<div class="ctas"><button type="button" class="btn" data-cta>Talk to us</button><a class="btn btn-ghost" href="#demo">Try the demo ↓</a></div>
+<p class="offer">Self-hosted on your server. Works with the LLM you already use. Scoped in one call.</p></div>
+<div class="window"><div class="winbar" aria-hidden="true"><i></i><i></i><i></i><span>pii-redactor — local</span></div><div class="demo side" id="demo">
+<div class="pane pane-in"><div class="pane-head"><span>Your text</span><span class="muted" id="wc"></span></div>
+<textarea id="input" rows="12" spellcheck="false" aria-label="Your text" data-sample></textarea></div>
+<div class="pane pane-out"><div class="pane-head"><span>What the model gets</span>
+<div class="seg" role="tablist" aria-label="Output view"><button type="button" role="tab" aria-selected="true" data-view="red">Redacted</button><button type="button" role="tab" aria-selected="false" data-view="raw">Restored</button></div></div>
+<div class="out" id="out" data-sample aria-live="polite"></div>
+<ul class="legend" aria-label="Tiers"><li><i class="sw t-id"></i>Identity</li><li><i class="sw t-del"></i>Delete</li><li><i class="sw t-gen"></i>Generalise</li></ul></div>
+<div class="actions"><button type="button" class="btn btn-ghost" id="gen">Generate sample</button><button type="button" class="btn" id="redact">Redact</button><button type="button" class="btn btn-ghost" id="rehyd">Rehydrate</button><p class="timing" id="timing">rules 12 ms · model G 410 ms · model F 380 ms · total 802 ms</p></div>
+<aside class="registry" aria-label="Registry"><div class="pane-head"><span>Registry — stays on your server</span><span class="count"><b id="count">0</b> tokens</span></div>
+<div class="tw"><table><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"></colgroup><thead><tr><th>Token</th><th>Kind</th><th>Tier</th><th>Seen</th></tr></thead><tbody id="reg" data-sample></tbody></table></div></aside>
+<div class="notes"><p class="demo-note">Processed in memory on one machine. Nothing stored.</p>
+<p class="proto-note" id="proto" hidden>Live redaction is unavailable right now. Showing the built-in sample.</p></div>
+</div></div>
+<div class="regimes-strip"><ul class="badges" aria-label="Regimes"><li>GDPR</li><li>CCPA/CPRA</li><li>FERPA</li><li>COPPA</li></ul><p>Built to keep personal data out of the model call under these regimes.</p></div>
+</div></section>
+<section class="sec urgency" id="why"><div class="wrap"><div class="sec-h"><h2>Paste it unmasked and you've just…</h2><p class="lead">No processor contract, no consent, no safeguards? Then:</p></div>
+<ul class="ucards"><li class="ucard"><h3>GDPR</h3><p>Made an unlawful transfer (Art. 28, Ch. V)</p></li><li class="ucard"><h3>FERPA</h3><p>Disclosed an education record without consent</p></li><li class="ucard"><h3>COPPA</h3><p>Shared a child's data with no consent</p></li><li class="ucard"><h3>CCPA/CPRA</h3><p>Disclosed personal information outside any contract</p></li></ul>
+<p class="uline">Emails, DMs, tickets, chat exports — same rule.</p>
+<div class="regimes-strip"><ul class="badges" aria-label="Regimes"><li>GDPR</li><li>CCPA/CPRA</li><li>FERPA</li><li>COPPA</li></ul><p>A deployment is documented against these regimes.</p></div></div></section>
+<section class="sec alt" id="numbers"><div class="wrap"><div class="sec-h"><h2>Measured, not promised.</h2><p class="frame">400 real support threads · one client · hand-arbitrated key</p></div>
+<div class="tiles"><div class="tile"><b>98.8%</b><strong>Come out fully clean</strong><span>of threads, nothing personal left</span></div><div class="tile"><b>97.1%</b><strong>Worst case</strong><span>statistical floor at 95% confidence</span></div><div class="tile"><b>99.9%</b><strong>Names, addresses, account numbers caught</strong><span>the data that identifies a person</span></div></div>
+<p class="note">A redaction layer, not legal advice. Compliance depends on your contracts and process.</p>
+</div></section>
+<section class="sec" id="uses"><div class="wrap"><div class="sec-h"><h2>What goes through it</h2><p class="lead">Any text with people in it.</p></div><ul class="uses"><li><h3>Customer support emails</h3><p>Order numbers, cards, addresses.</p></li><li><h3>Invoices & payment data</h3><p>Account numbers, amounts, arrears.</p></li><li><h3>Contracts & legal intake</h3><p>The parties, addresses, the matter.</p></li><li><h3>Tutoring & school records</h3><p>Students, grades, parent emails. FERPA.</p></li><li><h3>Chat & DM exports</h3><p>Whole conversations, pasted wholesale.</p></li><li><h3>Support tickets</h3><p>Customer details in every thread.</p></li><li><h3>HR files & CVs</h3><p>Salary history, home addresses, ID numbers.</p></li><li><h3>Insurance claims</h3><p>Birth dates, policy numbers, injuries.</p></li><li><h3>Tenant & property records</h3><p>Unit numbers, arrears, repair notes.</p></li><li><h3>Childcare & after-school</h3><p>Under-13s, allergies, pickup adults. COPPA.</p></li><li><h3>Call transcripts & meeting notes</h3><p>Names and numbers said out loud.</p></li><li><h3>Reviews & survey answers</h3><p>Free text with people in it.</p></li></ul></div></section>
+<section class="band"><div class="wrap"><h2>20 minutes to a quote.</h2><p>Tell us what you'd run through it. We tell you what it takes and what it costs.</p><button type="button" class="btn" data-cta>Talk to us</button></div></section>
+<section class="sec" id="how"><div class="wrap"><div class="bento">
+<div class="cell b-steps"><h2>How the round trip works</h2><p class="lead">Where the text goes: your server, local weights, no outside call. Only tokens leave.</p><ol class="steps"><li><span class="n" aria-hidden="true">1</span><div><h3>Redact</h3><p>Names, addresses and account numbers become typed tokens. Local weights, no outside call.</p></div></li><li><span class="n" aria-hidden="true">2</span><div><h3>Register</h3><p>Same name, same token. The registry stays on that machine and is the only way back.</p></div></li><li><span class="n" aria-hidden="true">3</span><div><h3>Send tokens</h3><p>ChatGPT, Claude, Gemini or Grok gets <code>[PERSON_1]</code> at <code>[ADDRESS_1]</code> asking about <code>[REDACTED_1]</code>. It drafts in tokens.</p></div></li><li><span class="n" aria-hidden="true">4</span><div><h3>Rehydrate</h3><p>The reply returns. The registry puts the originals back. Unknown tokens are refused, not guessed.</p></div></li></ol></div>
+<div class="cell b-reg" id="law"><h2>What the law says</h2><p class="pre">Not a ban. A disclosure, allowed only under conditions.</p><div class="rcards"><div class="rcard"><h3>GDPR</h3><p>Art. 28 processor contract; Chapter V safeguards outside the EU; stricter for health data.</p><p class="wo"><i>Without it:</i> An unlawful transfer.</p></div><div class="rcard"><h3>FERPA</h3><p>Only to a vendor that qualifies as a “school official” under the school's direct control.</p><p class="wo"><i>Without it:</i> An unconsented disclosure.</p></div><div class="rcard"><h3>COPPA</h3><p>Under-13 data needs verifiable parental consent that names the recipient.</p><p class="wo"><i>Without it:</i> No consent for that recipient.</p></div><div class="rcard"><h3>CCPA/CPRA</h3><p>Only to a service provider under a contract that restricts its use.</p><p class="wo"><i>Without it:</i> A disclosure outside the contract.</p></div></div><p class="closer">What reaches the model is not personal data.</p></div>
+<div class="cell b-chips" id="kinds"><h2>What the law calls personal data</h2><ul class="chips" aria-label="Kinds of personal data"><li>Name</li><li>Email</li><li>Phone</li><li>Home address</li><li>Bank account</li><li>Card number</li><li>Account number</li><li>Date of birth</li><li>Child's name</li><li>Student number</li><li>Staff name</li><li>Occupation</li><li>Gender</li><li>Amount</li><li>Payment status</li><li>Health note</li><li class="q">grade + section + town</li></ul><p class="chips-cap">Together they point at one household. That list is the redactor's list of kinds.</p></div>
+</div></div></section>
+<section class="band"><div class="wrap"><h2>20 minutes to a quote.</h2><p>Tell us what you'd run through it. We tell you what it takes and what it costs.</p><button type="button" class="btn" data-cta>Talk to us</button></div></section>
+</main>
+<footer class="foot"><div class="wrap"><div class="regimes-strip"><ul class="badges" aria-label="Regimes"><li>GDPR</li><li>CCPA/CPRA</li><li>FERPA</li><li>COPPA</li></ul><p>Built to keep personal data out of the model call under these regimes. Nothing you paste is stored.</p></div><p class="foot-disc">A redaction layer, not legal advice. Compliance depends on your contracts and process.</p><div class="foot-row"><span>Oleg Nikitins</span><a href="https://seismisk.com">seismisk.com</a><a href="mailto:olegs@seismisk.com">olegs@seismisk.com</a><a href="https://www.linkedin.com/in/olegs-nikitins/">LinkedIn</a></div></div></footer>
+<div class="modal" id="modal" hidden>
+<div class="backdrop" data-close></div>
+<div class="panel" role="dialog" aria-modal="true" aria-labelledby="mtitle">
+<button type="button" class="x" data-close aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+<form id="form" novalidate><h2 id="mtitle">Talk to us</h2><p class="lead">What would you run through it, and where does it live today?</p><label class="field"><span>Your name</span><input type="text" name="name" placeholder="Marisol Okonkwo" autocomplete="name" required></label><label class="field"><span>Email</span><input type="email" name="email" placeholder="you@company.com" autocomplete="email" required></label><label class="field"><span>Phone<i>optional</i></span><input type="tel" name="phone" placeholder="+1 555 0142" autocomplete="tel"></label><label class="field"><span>Use case<i>optional</i></span><input type="text" name="use_case" placeholder="Support inbox, ~300 emails a week" autocomplete="off"></label><label class="field"><span>Message</span><textarea name="message" rows="4" placeholder="What would you run through it?" required></textarea></label>
+<div id="ts" class="cf-turnstile" data-sitekey="" hidden></div>
+<input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+<p class="err" id="err" role="alert" hidden>Name, email and message are needed.</p>
+<button type="submit" class="btn btn-wide">Send</button></form>
+<div class="done" id="done" hidden><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#1A1950" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg><p>Your message is in Oleg's inbox, he will reply shortly.</p><button type="button" class="btn btn-ghost btn-wide" data-close>Close</button></div>
+</div></div>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
